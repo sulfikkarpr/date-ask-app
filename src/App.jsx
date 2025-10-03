@@ -262,11 +262,7 @@ export default function App() {
           {confirmed && (
             <div className="mt-6 text-center">
               <div className="font-semibold">
-                All set! I'll notify you (stored in browser)
-              </div>
-              <div className="text-xs text-white/70 mt-1">
-                You can replace localStorage with a remote endpoint to receive
-                updates.
+                All set! I'll see you then. 😊
               </div>
             </div>
           )}
