@@ -4,6 +4,8 @@ import Calendar from "react-calendar";
 import { motion, AnimatePresence } from "framer-motion";
 import ConfettiExplosion from "react-dom-confetti";
 import { Fireworks } from "fireworks-js";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./firebase";
 
 export default function App() {
   const [step, setStep] = useState("ask");
@@ -92,15 +94,22 @@ export default function App() {
     }, 5000); // 5 seconds instead of 3
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const payload = {
       yes: true,
       date: pickedDate ? pickedDate.toISOString() : null,
       type: dateType,
       confirmedAt: new Date().toISOString(),
     };
-    localStorage.setItem("date-ask-response", JSON.stringify(payload));
-    setConfirmed(true);
+
+    try {
+      // Save to Firestore
+      await addDoc(collection(db, "dateResponses"), payload);
+      setConfirmed(true);
+      console.log("✅ Response saved to Firestore!");
+    } catch (error) {
+      console.error("❌ Error saving to Firestore: ", error);
+    }
   };
 
   const today = new Date();
@@ -189,7 +198,9 @@ export default function App() {
           {step === "calendar" && (
             <div className="w-full mt-4 flex flex-col md:flex-row gap-6">
               <div className="flex-1 bg-white/10 rounded-xl p-4 shadow-lg">
-                <h3 className="font-semibold mb-2 text-pink-400">Choose a date</h3>
+                <h3 className="font-semibold mb-2 text-pink-400">
+                  Choose a date
+                </h3>
                 <Calendar
                   onChange={setPickedDate}
                   value={pickedDate}
@@ -201,7 +212,8 @@ export default function App() {
                   navigationLabel={null}
                   showNeighboringMonth={false}
                   tileClassName={({ date, view }) =>
-                    pickedDate && date.toDateString() === pickedDate.toDateString()
+                    pickedDate &&
+                    date.toDateString() === pickedDate.toDateString()
                       ? "bg-pink-500 text-white rounded-full"
                       : "hover:bg-pink-200 hover:text-pink-900 rounded-full"
                   }
