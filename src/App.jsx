@@ -242,13 +242,6 @@ export default function App() {
                   >
                     Confirm
                   </button>
-
-                  {confirmed && (
-                    <div className="mt-2 text-sm text-white/90">
-                      Date confirmed — check localStorage or your app's backend
-                      for details.
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
