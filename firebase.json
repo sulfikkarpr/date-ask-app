@@ -7,7 +7,7 @@
   },
    "hosting": {
     "site": "marzi-moment",
-    "public": "public",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
