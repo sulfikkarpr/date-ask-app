@@ -151,19 +151,22 @@ export default function App() {
 
           {step === "ask" && (
             <div
-              className="flex items-center mt-6"
-              style={{ gap: `${2 + yesScale * 2}rem` }}
+              className="flex flex-col sm:flex-row items-center mt-6 w-full justify-center gap-4"
             >
               <motion.button
                 ref={yesRef}
                 onClick={handleYes}
                 animate={
                   yesPop
-                    ? { scale: [1, 1.5, 0.9, 1.1, 1] }
+                    ? { scale: [1, 1.2, 0.9, 1.1, 1] }
                     : { scale: yesScale }
                 }
                 transition={{ type: "spring", stiffness: 350, damping: 20 }}
-                className="bg-pink-500 text-white font-bold px-6 py-3 rounded-full shadow-lg"
+                className="bg-pink-500 text-white font-bold px-6 py-3 rounded-full shadow-lg w-full sm:w-auto max-w-xs text-xl"
+                style={{
+                  fontSize: "clamp(1.2rem, 5vw, 2rem)",
+                  overflow: "hidden",
+                }}
               >
                 YES
                 <ConfettiExplosion active={yesPop} />
@@ -171,7 +174,10 @@ export default function App() {
 
               <button
                 onClick={handleNo}
-                className="bg-gray-300 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-inner"
+                className="bg-gray-300 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-inner w-full sm:w-auto max-w-xs text-xl mt-2 sm:mt-0"
+                style={{
+                  fontSize: "clamp(1rem, 4vw, 1.5rem)",
+                }}
               >
                 NO
               </button>
