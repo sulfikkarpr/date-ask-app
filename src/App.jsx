@@ -160,7 +160,9 @@ export default function App() {
       <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-3xl transition-all duration-500">
         <div className="flex flex-col items-center gap-6">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-center">
-            Will you go on a date with me?
+            {name
+              ? `Hi ${name}, will you go on a date with me? 💖`
+              : `Will you go on a date with me? 💖`}
           </h1>
           <p className="text-sm text-white/70 text-center">
             (no pressure — just vibes)
