@@ -18,8 +18,18 @@ export default function App() {
   const [madeChoiceAt, setMadeChoiceAt] = useState(null);
   const [yesPop, setYesPop] = useState(false);
   const [showFireworks, setShowFireworks] = useState(false);
+  const [name, setName] = useState("");
   const yesRef = useRef(null);
   const fireworksRef = useRef(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userName = params.get("name");
+    if (userName) {
+      const formatted = userName.charAt(0).toUpperCase() + userName.slice(1);
+      setName(formatted);
+    }
+  }, []);
 
   useEffect(() => {
     function onResize() {
@@ -85,7 +95,13 @@ export default function App() {
     setMadeChoiceAt(new Date().toISOString());
     localStorage.setItem(
       "date-ask-response",
-      JSON.stringify({ yes: true, time: new Date().toISOString() })
+      JSON.stringify({
+        name: name || "Anonymous", // From URL param
+        response: "Yes", // "Yes" or "No"
+        dateType: dateType, // e.g. "Coffee date"
+        chosenDate: pickedDate, // e.g. "2025-10-07"
+        time: new Date().toISOString(), // When response was given
+      })
     );
     setStep("celebrate");
     setTimeout(() => {
