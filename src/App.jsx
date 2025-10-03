@@ -6,7 +6,7 @@ import ConfettiExplosion from "react-dom-confetti";
 import { Fireworks } from "fireworks-js";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
-
+import { FaHeart } from "react-icons/fa";
 export default function App() {
   const [step, setStep] = useState("ask");
   const [yesScale, setYesScale] = useState(1);
@@ -19,6 +19,7 @@ export default function App() {
   const [yesPop, setYesPop] = useState(false);
   const [showFireworks, setShowFireworks] = useState(false);
   const [name, setName] = useState("");
+  const [showRoses, setShowRoses] = useState(false);
   const yesRef = useRef(null);
   const fireworksRef = useRef(null);
 
@@ -112,17 +113,37 @@ export default function App() {
 
   const handleConfirm = async () => {
     const payload = {
-      yes: true,
-      date: pickedDate ? pickedDate.toISOString() : null,
-      type: dateType,
-      confirmedAt: new Date().toISOString(),
+      name: name || "Anonymous", // From ?name=...
+      response: "Yes", // Hardcoded since it's a YES flow
+      chosenDate: pickedDate ? pickedDate.toISOString() : null, // Selected date
+      dateType: dateType, // Coffee / Movie / etc
+      confirmed: true, // Mark confirmed
+      confirmedAt: new Date().toISOString(), // Timestamp
     };
 
     try {
       // Save to Firestore
       await addDoc(collection(db, "dateResponses"), payload);
+
+      // Save locally too
+      localStorage.setItem("date-ask-response", JSON.stringify(payload));
+
       setConfirmed(true);
-      console.log("✅ Response saved to Firestore!");
+
+      // 🎁 NEW: Trigger Confetti and Fireworks effects for a few seconds
+      setShowFireworks(true);
+      setYesPop(true); // This state controls your ConfettiExplosion
+      setStep("celebrate");
+      // Trigger roses after confirm (this controls the Framer Motion component below)
+      setShowRoses(true);
+
+      // Turn off the explosive effects after a short delay (e.g., 3 seconds)
+      setTimeout(() => {
+        setShowFireworks(false);
+        setYesPop(false);
+      }, 5000);
+
+      console.log("✅ Full response saved to Firestore & localStorage!");
     } catch (error) {
       console.error("❌ Error saving to Firestore: ", error);
     }
@@ -283,6 +304,34 @@ export default function App() {
                 All set! I'll see you then. 😊
               </div>
             </div>
+          )}
+          {confirmed && showRoses && (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="flex flex-col items-center mt-6 text-4xl"
+            >
+              {/* Animated Roses: Now using the FaHeart Icon (as a close alternative) */}
+              <div className="flex flex-wrap justify-center">
+                {[...Array(5)].map(
+                  (
+                    _,
+                    i // Use Array to generate 5 items
+                  ) => (
+                    <motion.span
+                      key={`rose-icon-${i}`}
+                      initial={{ y: 100, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: i * 0.2 }}
+                      className="mx-1 text-pink-500" // Use a color
+                    >
+                      <FaHeart /> {/* REPLACED '🌹' with the ICON */}
+                    </motion.span>
+                  )
+                )}
+              </div>
+            </motion.div>
           )}
         </div>
       </div>
