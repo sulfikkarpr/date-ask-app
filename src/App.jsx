@@ -4,7 +4,6 @@ import Calendar from "react-calendar";
 import { motion, AnimatePresence } from "framer-motion";
 import ConfettiExplosion from "react-dom-confetti";
 import { Fireworks } from "fireworks-js";
-import { saveResponse } from "./firebase";
 
 export default function App() {
   const [step, setStep] = useState("ask");
@@ -17,7 +16,6 @@ export default function App() {
   const [madeChoiceAt, setMadeChoiceAt] = useState(null);
   const [yesPop, setYesPop] = useState(false);
   const [showFireworks, setShowFireworks] = useState(false);
-  const [userName, setUserName] = useState("there");
   const yesRef = useRef(null);
   const fireworksRef = useRef(null);
 
@@ -44,12 +42,6 @@ export default function App() {
         }
       } catch (e) {}
     }
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get("name");
-    if (name) setUserName(name);
   }, []);
 
   useEffect(() => {
@@ -100,13 +92,13 @@ export default function App() {
     }, 5000); // 5 seconds instead of 3
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     const payload = {
-      name: userName,
+      yes: true,
       date: pickedDate ? pickedDate.toISOString() : null,
       type: dateType,
+      confirmedAt: new Date().toISOString(),
     };
-    await saveResponse(payload); // Save to Firestore
     localStorage.setItem("date-ask-response", JSON.stringify(payload));
     setConfirmed(true);
   };
@@ -143,7 +135,7 @@ export default function App() {
       <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-3xl transition-all duration-500">
         <div className="flex flex-col items-center gap-6">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-center">
-            {`Hi ${userName}, Will you go on a date with me?`}
+            Will you go on a date with me?
           </h1>
           <p className="text-sm text-white/70 text-center">
             (no pressure — just vibes)
@@ -216,7 +208,7 @@ export default function App() {
                 />
               </div>
 
-              <div className="w-80 flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="bg-white/3 rounded-xl p-4">
                   <h3 className="font-semibold">Pick a date type</h3>
                   <select
