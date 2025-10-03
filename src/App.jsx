@@ -4,6 +4,7 @@ import Calendar from "react-calendar";
 import { motion, AnimatePresence } from "framer-motion";
 import ConfettiExplosion from "react-dom-confetti";
 import { Fireworks } from "fireworks-js";
+import { saveResponse } from "./firebase";
 
 export default function App() {
   const [step, setStep] = useState("ask");
@@ -99,13 +100,13 @@ export default function App() {
     }, 5000); // 5 seconds instead of 3
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const payload = {
-      yes: true,
+      name: userName,
       date: pickedDate ? pickedDate.toISOString() : null,
       type: dateType,
-      confirmedAt: new Date().toISOString(),
     };
+    await saveResponse(payload); // Save to Firestore
     localStorage.setItem("date-ask-response", JSON.stringify(payload));
     setConfirmed(true);
   };
