@@ -5,7 +5,8 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "hosting": {
+   "hosting": {
+    "site": "marzi-moment",
     "public": "public",
     "ignore": [
       "firebase.json",
